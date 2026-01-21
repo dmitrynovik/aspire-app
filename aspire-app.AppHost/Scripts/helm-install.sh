@@ -11,8 +11,8 @@ az acr login --name $ACR_NAME
 SECRETS_FILE=$(realpath "secrets.yaml")
 echo $SECRETS_FILE
 
-aspire publish --clear-cache
-#aspire deploy --clear-cache
+#aspire publish --clear-cache
+aspire deploy --clear-cache
 
 pushd ../
 pushd "aspire-output"
