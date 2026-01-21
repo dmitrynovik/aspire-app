@@ -17,7 +17,7 @@ var environment = builder.AddKubernetesEnvironment(RESOURCE_PREFIX + "k8s")
        {
            k8s.HelmChartName = "aspire-app";
            //k8s.DefaultStorageClassName = "managed-csi";
-           //k8s.DefaultServiceType = "LoadBalancer";
+           k8s.DefaultServiceType = "LoadBalancer";
        });
 
 var dockerEnv = builder
