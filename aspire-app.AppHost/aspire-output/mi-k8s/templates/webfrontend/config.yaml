@@ -17,3 +17,5 @@ data:
   services__apiservice__http__0: "{{ .Values.config.webfrontend.services__apiservice__http__0 }}"
   APISERVICE_HTTPS: "{{ .Values.config.webfrontend.APISERVICE_HTTPS }}"
   services__apiservice__https__0: "{{ .Values.config.webfrontend.services__apiservice__https__0 }}"
+  GATEWAY_HTTP: "{{ .Values.config.webfrontend.GATEWAY_HTTP }}"
+  services__gateway__http__0: "{{ .Values.config.webfrontend.services__gateway__http__0 }}"
