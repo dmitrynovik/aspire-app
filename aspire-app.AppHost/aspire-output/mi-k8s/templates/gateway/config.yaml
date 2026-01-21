@@ -1,0 +1,26 @@
+---
+apiVersion: "v1"
+kind: "ConfigMap"
+metadata:
+  name: "gateway-config"
+  labels:
+    app.kubernetes.io/name: "aspire-app"
+    app.kubernetes.io/component: "gateway"
+    app.kubernetes.io/instance: "{{.Release.Name}}"
+data:
+  ASPNETCORE_ENVIRONMENT: "{{ .Values.config.gateway.ASPNETCORE_ENVIRONMENT }}"
+  WEBFRONTEND_HTTP: "{{ .Values.config.gateway.WEBFRONTEND_HTTP }}"
+  REVERSEPROXY__ROUTES__route0__MATCH__PATH: "{{ .Values.config.gateway.REVERSEPROXY__ROUTES__route0__MATCH__PATH }}"
+  REVERSEPROXY__ROUTES__route0__CLUSTERID: "{{ .Values.config.gateway.REVERSEPROXY__ROUTES__route0__CLUSTERID }}"
+  REVERSEPROXY__ROUTES__route1__MATCH__PATH: "{{ .Values.config.gateway.REVERSEPROXY__ROUTES__route1__MATCH__PATH }}"
+  REVERSEPROXY__ROUTES__route1__CLUSTERID: "{{ .Values.config.gateway.REVERSEPROXY__ROUTES__route1__CLUSTERID }}"
+  REVERSEPROXY__ROUTES__route1__TRANSFORMS__0__PathRemovePrefix: "{{ .Values.config.gateway.REVERSEPROXY__ROUTES__route1__TRANSFORMS__0__PathRemovePrefix }}"
+  REVERSEPROXY__CLUSTERS__cluster_webfrontend__DESTINATIONS__destination1__ADDRESS: "{{ .Values.config.gateway.REVERSEPROXY__CLUSTERS__cluster_webfrontend__DESTINATIONS__destination1__ADDRESS }}"
+  REVERSEPROXY__CLUSTERS__cluster_apiservice__DESTINATIONS__destination1__ADDRESS: "{{ .Values.config.gateway.REVERSEPROXY__CLUSTERS__cluster_apiservice__DESTINATIONS__destination1__ADDRESS }}"
+  services__webfrontend__http__0: "{{ .Values.config.gateway.services__webfrontend__http__0 }}"
+  WEBFRONTEND_HTTPS: "{{ .Values.config.gateway.WEBFRONTEND_HTTPS }}"
+  services__webfrontend__https__0: "{{ .Values.config.gateway.services__webfrontend__https__0 }}"
+  APISERVICE_HTTP: "{{ .Values.config.gateway.APISERVICE_HTTP }}"
+  services__apiservice__http__0: "{{ .Values.config.gateway.services__apiservice__http__0 }}"
+  APISERVICE_HTTPS: "{{ .Values.config.gateway.APISERVICE_HTTPS }}"
+  services__apiservice__https__0: "{{ .Values.config.gateway.services__apiservice__https__0 }}"
