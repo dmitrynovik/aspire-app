@@ -20,7 +20,9 @@ var environment = builder.AddKubernetesEnvironment(RESOURCE_PREFIX + "k8s")
            //k8s.DefaultServiceType = "LoadBalancer";
        });
 
-//var dockerEnv = builder.AddDockerComposeEnvironment(RESOURCE_PREFIX + "docker-engine");
+var dockerEnv = builder
+    .AddDockerComposeEnvironment(RESOURCE_PREFIX + "docker-engine")
+    .WithContainerRegistry(registry);
 
 var api = builder
     .AddProject<Projects.aspire_app_ApiService>("apiservice")
@@ -57,6 +59,9 @@ var gateway = builder.AddYarp("gateway")
                      })
                      .WithReference(api)
                      .WithReference(webFrontEnd);
+
+api.WithReference(gateway);
+webFrontEnd.WithReference(gateway);
 
 var app = builder.Build();
 await app.RunAsync();
