@@ -20,12 +20,13 @@ var environment = builder.AddKubernetesEnvironment(RESOURCE_PREFIX + "k8s")
            //k8s.DefaultServiceType = "LoadBalancer";
        });
 
-var dockerEnv = builder.AddDockerComposeEnvironment(RESOURCE_PREFIX + "docker-engine");
+//var dockerEnv = builder.AddDockerComposeEnvironment(RESOURCE_PREFIX + "docker-engine");
 
 var api = builder
     .AddProject<Projects.aspire_app_ApiService>("apiservice")
     .WithHttpHealthCheck("/health")
     .WithComputeEnvironment(environment)
+    .WithContainerRegistry(registry)
     .WithImagePushOptions(ctx =>
     {
         ctx.Options.RemoteImageTag = "latest";
@@ -37,6 +38,7 @@ var webFrontEnd = builder.AddProject<Projects.aspire_app_Web>("webfrontend")
     .WithReference(api)
     .WaitFor(api)
     .WithComputeEnvironment(environment)
+    .WithContainerRegistry(registry)
     .WithImagePushOptions(ctx =>
     {
         ctx.Options.RemoteImageTag = "latest";
