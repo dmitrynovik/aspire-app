@@ -1,0 +1,22 @@
+<Project Sdk="Aspire.AppHost.Sdk/13.1.0">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UserSecretsId>188a7012-665a-4778-a9e5-4c1566d6a432</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\aspire-app.ApiService\aspire-app.ApiService.csproj" />
+    <ProjectReference Include="..\aspire-app.Web\aspire-app.Web.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.Docker" Version="13.1.0-preview.1.25616.3" />
+    <PackageReference Include="Aspire.Hosting.Kubernetes" Version="13.1.0-preview.1.25616.3" />
+    <PackageReference Include="Aspire.Hosting.Yarp" Version="13.1.0" />
+  </ItemGroup>
+
+</Project>
