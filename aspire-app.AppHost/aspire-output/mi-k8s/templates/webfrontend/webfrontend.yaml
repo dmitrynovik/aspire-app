@@ -2,7 +2,7 @@
 apiVersion: "v1"
 kind: "Service"
 metadata:
-  name: "webfrontend-service"
+  name: "webfrontend"
   labels:
     app.kubernetes.io/name: "aspire-app"
     app.kubernetes.io/component: "webfrontend"
@@ -17,8 +17,8 @@ spec:
     - name: "http"
       protocol: "TCP"
       port: {{ .Values.parameters.webfrontend.port_http }}
-      targetPort: "{{ .Values.parameters.webfrontend.port_http }}"
+      targetPort: {{ .Values.parameters.webfrontend.port_http }}
     - name: "https"
       protocol: "TCP"
       port: {{ .Values.parameters.webfrontend.port_https }}
-      targetPort: "{{ .Values.parameters.webfrontend.port_https }}"
+      targetPort: {{ .Values.parameters.webfrontend.port_https }}

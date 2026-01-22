@@ -17,7 +17,7 @@ var environment = builder.AddKubernetesEnvironment(RESOURCE_PREFIX + "k8s")
        {
            k8s.HelmChartName = "aspire-app";
            //k8s.DefaultStorageClassName = "managed-csi";
-           k8s.DefaultServiceType = "LoadBalancer";
+           //k8s.DefaultServiceType = "LoadBalancer";
        });
 
 var dockerEnv = builder
@@ -32,6 +32,11 @@ var api = builder
     .WithImagePushOptions(ctx =>
     {
         ctx.Options.RemoteImageTag = "latest";
+    })
+    .PublishAsKubernetesService(options =>
+    {
+        options.Service!.Spec.Type = "LoadBalancer";
+        options.Service!.Metadata.Name = "apiservice";
     });
 
 var webFrontEnd = builder.AddProject<Projects.aspire_app_Web>("webfrontend")
@@ -44,21 +49,31 @@ var webFrontEnd = builder.AddProject<Projects.aspire_app_Web>("webfrontend")
     .WithImagePushOptions(ctx =>
     {
         ctx.Options.RemoteImageTag = "latest";
+    })
+    .PublishAsKubernetesService(options =>
+    {
+        options.Service!.Spec.Type = "LoadBalancer";
+        options.Service!.Metadata.Name = "webfrontend";
     });
-
 
 var gateway = builder.AddYarp("gateway")
                      .WithComputeEnvironment(environment)
                      .WithConfiguration(yarp =>
                      {
-                         yarp.AddRoute(webFrontEnd);
-
-                         yarp.AddRoute("/api/{**catch-all}", api)
+                         yarp.AddRoute("/api/{**catch-all}", api.GetEndpoint("http"))
                              .WithTransformPathRemovePrefix("/api");
 
+                         yarp.AddRoute(webFrontEnd.GetEndpoint("http"))
+                             .WithTransformPathRemovePrefix("/web");
+
                      })
-                     .WithReference(api)
-                     .WithReference(webFrontEnd);
+                    .PublishAsKubernetesService(configure =>
+                    {
+                        configure.Service!.Spec.Type = "LoadBalancer";
+                    })
+                    .WithReference(api)
+                    .WithReference(webFrontEnd)
+                    .WithExternalHttpEndpoints();
 
 api.WithReference(gateway);
 webFrontEnd.WithReference(gateway);
