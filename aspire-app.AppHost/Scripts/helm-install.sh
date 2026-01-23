@@ -21,13 +21,13 @@ pushd mi-k8s
 SEARCH_DIR="."
 
 # Find all .yaml files recursively and remove quotes around port values
-# Issue https://github.com/dotnet/aspire/issues/11789
 find "$SEARCH_DIR" -type f \( -name '*.yaml' \) -print0 |
 while IFS= read -r -d $'\0' file; do
     echo "Processing file: $file"
     # Use sed to modify the file in place (-i)
     # For each line containing 'port:', remove all double quotes (")
     # This targets the value part, e.g., '{{ .Values.param }}'
+    # Issue https://github.com/dotnet/aspire/issues/11789
     sed -i '/port:/s/"//g' "$file"
     sed -i '/containerPort:/s/"//g' "$file"
     sed -i '/targetPort:/s/"//g' "$file"

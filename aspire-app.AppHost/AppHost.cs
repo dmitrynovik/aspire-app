@@ -16,6 +16,7 @@ var environment = builder.AddKubernetesEnvironment(RESOURCE_PREFIX + "k8s")
        .WithProperties(k8s =>
        {
            k8s.HelmChartName = "aspire-app";
+           k8s.DefaultStorageType = "pvc";
            //k8s.DefaultStorageClassName = "managed-csi";
            //k8s.DefaultServiceType = "LoadBalancer";
        });
@@ -24,11 +25,21 @@ var dockerEnv = builder
     .AddDockerComposeEnvironment(RESOURCE_PREFIX + "docker-engine")
     .WithContainerRegistry(registry);
 
+var pg = builder
+    .AddPostgres("postgres")
+    .WithComputeEnvironment(environment)
+    .PublishAsKubernetesService(configure => 
+    {
+        configure.Service!.Spec.Type = "LoadBalancer";
+    })
+    .AddDatabase("audit-log");
+
 var api = builder
     .AddProject<Projects.aspire_app_ApiService>("apiservice")
     .WithHttpHealthCheck("/health")
     .WithComputeEnvironment(environment)
     .WithContainerRegistry(registry)
+    .WithReference(pg)
     .WithImagePushOptions(ctx =>
     {
         ctx.Options.RemoteImageTag = "latest";

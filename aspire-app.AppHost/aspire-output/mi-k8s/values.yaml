@@ -7,13 +7,24 @@ parameters:
     port_http: "8080"
     port_https: "8080"
     webfrontend_image: "aspireapp.azurecr.io/webfrontend:latest"
-secrets: {}
+secrets:
+  postgres:
+    POSTGRES_PASSWORD: ""
 config:
+  postgres:
+    POSTGRES_HOST_AUTH_METHOD: "scram-sha-256"
+    POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256 --auth-local=scram-sha-256"
+    POSTGRES_USER: "postgres"
   apiservice:
     OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: "true"
     OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: "true"
     OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
     ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+    AUDIT_LOG_HOST: "postgres-service"
+    AUDIT_LOG_PORT: "5432"
+    AUDIT_LOG_USERNAME: "postgres"
+    AUDIT_LOG_JDBCCONNECTIONSTRING: "jdbc:postgresql://postgres-service:5432/audit-log"
+    AUDIT_LOG_DATABASENAME: "audit-log"
     GATEWAY_HTTP: "http://gateway-service:5000"
     services__gateway__http__0: "http://gateway-service:5000"
   webfrontend:
