@@ -2,43 +2,37 @@
 apiVersion: "apps/v1"
 kind: "StatefulSet"
 metadata:
-  name: "postgres-statefulset"
+  name: "kafka-statefulset"
   labels:
     app.kubernetes.io/name: "aspire-app"
-    app.kubernetes.io/component: "postgres"
+    app.kubernetes.io/component: "kafka"
     app.kubernetes.io/instance: "{{.Release.Name}}"
 spec:
   template:
     metadata:
       labels:
         app.kubernetes.io/name: "aspire-app"
-        app.kubernetes.io/component: "postgres"
+        app.kubernetes.io/component: "kafka"
         app.kubernetes.io/instance: "{{.Release.Name}}"
     spec:
       containers:
-        - image: "docker.io/library/postgres:17.6"
-          name: "postgres"
+        - image: "docker.io/confluentinc/confluent-local:8.1.0"
+          name: "kafka"
           envFrom:
             - configMapRef:
-                name: "postgres-config"
-            - secretRef:
-                name: "postgres-secrets"
+                name: "kafka-config"
           ports:
             - name: "tcp"
               protocol: "TCP"
-              containerPort: 5432
-          volumeMounts:
-            - name: "kafka-pv"
-              mountPath: "data"
+              containerPort: 9092
+            - name: "internal"
+              protocol: "TCP"
+              containerPort: 9093
           imagePullPolicy: "IfNotPresent"
-      volumes:
-        - name: "kafka-pv"
-          persistentVolumeClaim:
-            claimName: "postgres-kafka-pv-pvc"
   selector:
     matchLabels:
       app.kubernetes.io/name: "aspire-app"
-      app.kubernetes.io/component: "postgres"
+      app.kubernetes.io/component: "kafka"
       app.kubernetes.io/instance: "{{.Release.Name}}"
   replicas: 1
   persistentVolumeClaimRetentionPolicy: {}

@@ -1,0 +1,19 @@
+---
+apiVersion: "v1"
+kind: "PersistentVolumeClaim"
+metadata:
+  name: "postgres-kafka-pv-pvc"
+  labels:
+    app.kubernetes.io/name: "aspire-app"
+    app.kubernetes.io/component: "postgres"
+    app.kubernetes.io/instance: "{{.Release.Name}}"
+spec:
+  dataSource: {}
+  storageClassName: "managed-csi"
+  dataSourceRef: {}
+  selector: {}
+  accessModes:
+    - "ReadWriteOnce"
+  resources:
+    requests:
+      storage: "1Gi"

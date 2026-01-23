@@ -14,7 +14,12 @@ config:
   postgres:
     POSTGRES_HOST_AUTH_METHOD: "scram-sha-256"
     POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256 --auth-local=scram-sha-256"
-    POSTGRES_USER: "postgres"
+  kafka:
+    KAFKA_LISTENERS: "PLAINTEXT://localhost:29092,CONTROLLER://localhost:29093,PLAINTEXT_HOST://0.0.0.0:9092,PLAINTEXT_INTERNAL://0.0.0.0:9093"
+    KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT"
+    KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka-service:29092,PLAINTEXT_HOST://kafka-service:9092,PLAINTEXT_INTERNAL://kafka-service:9093"
+    KAFKA_SASL_USERNAME: "root"
+    KAFKA_SASL_PASSWORD: "root"
   apiservice:
     OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: "true"
     OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: "true"
@@ -22,9 +27,11 @@ config:
     ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
     AUDIT_LOG_HOST: "postgres-service"
     AUDIT_LOG_PORT: "5432"
-    AUDIT_LOG_USERNAME: "postgres"
     AUDIT_LOG_JDBCCONNECTIONSTRING: "jdbc:postgresql://postgres-service:5432/audit-log"
     AUDIT_LOG_DATABASENAME: "audit-log"
+    ConnectionStrings__kafka: "kafka-service:9092"
+    KAFKA_HOST: "kafka-service"
+    KAFKA_PORT: "9092"
     GATEWAY_HTTP: "http://gateway-service:5000"
     services__gateway__http__0: "http://gateway-service:5000"
   webfrontend:

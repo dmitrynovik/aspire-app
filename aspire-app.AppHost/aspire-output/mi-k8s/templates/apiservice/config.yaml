@@ -18,5 +18,8 @@ data:
   AUDIT_LOG_USERNAME: "{{ .Values.config.apiservice.AUDIT_LOG_USERNAME }}"
   AUDIT_LOG_JDBCCONNECTIONSTRING: "{{ .Values.config.apiservice.AUDIT_LOG_JDBCCONNECTIONSTRING }}"
   AUDIT_LOG_DATABASENAME: "{{ .Values.config.apiservice.AUDIT_LOG_DATABASENAME }}"
+  ConnectionStrings__kafka: "{{ .Values.config.apiservice.ConnectionStrings__kafka }}"
+  KAFKA_HOST: "{{ .Values.config.apiservice.KAFKA_HOST }}"
+  KAFKA_PORT: "{{ .Values.config.apiservice.KAFKA_PORT }}"
   GATEWAY_HTTP: "{{ .Values.config.apiservice.GATEWAY_HTTP }}"
   services__gateway__http__0: "{{ .Values.config.apiservice.services__gateway__http__0 }}"

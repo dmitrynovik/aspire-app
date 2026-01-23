@@ -17,7 +17,7 @@ var environment = builder.AddKubernetesEnvironment(RESOURCE_PREFIX + "k8s")
        {
            k8s.HelmChartName = "aspire-app";
            k8s.DefaultStorageType = "pvc";
-           //k8s.DefaultStorageClassName = "managed-csi";
+           k8s.DefaultStorageClassName = "managed-csi";
            //k8s.DefaultServiceType = "LoadBalancer";
        });
 
@@ -25,14 +25,30 @@ var dockerEnv = builder
     .AddDockerComposeEnvironment(RESOURCE_PREFIX + "docker-engine")
     .WithContainerRegistry(registry);
 
+var pgUser = builder.AddParameter("postgres-user", "postgres");
+var pgPassword = builder.AddParameter("postgres-password", "postgres", secret: true);
+
 var pg = builder
-    .AddPostgres("postgres")
+    .AddPostgres("postgres", pgUser, pgPassword)
     .WithComputeEnvironment(environment)
+    .WithVolume("kafka-pv", "data", false)
     .PublishAsKubernetesService(configure => 
     {
         configure.Service!.Spec.Type = "LoadBalancer";
     })
     .AddDatabase("audit-log");
+
+    var kafka = //builder.ExecutionContext.IsRunMode ?
+        builder.AddKafka("kafka", 9092)
+            .WithEnvironment("KAFKA_SASL_USERNAME", "root")
+            .WithEnvironment("KAFKA_SASL_PASSWORD", "root")
+            .WithComputeEnvironment(environment)
+            .PublishAsKubernetesService(configure => 
+            {
+                configure.Service!.Spec.Type = "LoadBalancer";
+            })
+            ;
+
 
 var api = builder
     .AddProject<Projects.aspire_app_ApiService>("apiservice")
@@ -40,6 +56,9 @@ var api = builder
     .WithComputeEnvironment(environment)
     .WithContainerRegistry(registry)
     .WithReference(pg)
+    .WithReference(kafka)
+    .WaitFor(pg)
+    .WaitFor(kafka)
     .WithImagePushOptions(ctx =>
     {
         ctx.Options.RemoteImageTag = "latest";
